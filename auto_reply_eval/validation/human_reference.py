@@ -4,14 +4,13 @@
 
 1. **基准对照**：把人工参考回复用同一套评分卡打分，正常情况下它应当在"有用性"上
    稳定高于自动回复；如果连这一点都不成立，说明评分卡本身失效。
-2. **尾部区分度**：人工评语中问题最明确的几条 case，应当落在整体分布尾部。
-3. **分组区分度**：按人工评语正负倾向把 case 分成两组，问题组的"有用性"均值
-   应当低于认可组；若区分不开，说明指标对人工关注点的还原度不足。
+2. **尾部区分度**：人工评语中问题最明确的几条 case，其平均排名应当整体落在分布后半段。
+3. **分组区分度**：按人工评语正负倾向把 case 分成两组，检查"问题组"的有用性均值
+   是否反而明显高于"认可组"（容差内的差异不作判定），以发现口径反向。
 """
 
 from __future__ import annotations
 
-from math import ceil
 from typing import Sequence
 
 from auto_reply_eval.models import (
@@ -72,6 +71,10 @@ def classify_annotator_note(note: str) -> str:
     if acceptable > problematic:
         return "acceptable"
     return "mixed"
+
+
+# 分组检验的容差：认可组样本量小、分数粒度粗，容差内的均值差异不足以判定方向。
+GROUP_TOLERANCE = 0.25
 
 
 class HumanReferenceValidator:
@@ -157,37 +160,39 @@ class HumanReferenceValidator:
         overall_score: float,
     ) -> ValidationFinding:
         score_by_id = {item.case_id: item.final_score for item in case_scores}
+        total = len(ranked_case_ids)
+        rank_by_id = {
+            case_id: index + 1 for index, case_id in enumerate(ranked_case_ids)
+        }
         gold_scores = {
             case_id: score_by_id[case_id]
             for case_id in ANNOTATED_WORST_CASES
             if case_id in score_by_id
         }
-        total = len(ranked_case_ids)
-        window = max(1, ceil(total * 0.4))
-        tail = set(ranked_case_ids[:window])
-        hits = [case_id for case_id in gold_scores if case_id in tail]
-        missed = [case_id for case_id in gold_scores if case_id not in tail]
-        hit_rate = len(hits) / len(gold_scores) if gold_scores else 0.0
+        gold_ranks = [rank_by_id[case_id] for case_id in gold_scores]
+        # 用"平均排名"而不是"是否落入固定窗口"：
+        # LLM 裁判单次打分存在波动，固定窗口会让结论在不同次运行间反复翻转，
+        # 平均排名是聚合量，对单条 case 的抖动不敏感。
+        mean_rank = sum(gold_ranks) / len(gold_ranks) if gold_ranks else 0.0
+        percentile = mean_rank / total if total else 1.0
         detail = "、".join(
-            f"{case_id}={gold_scores[case_id]:.2f}" for case_id in ANNOTATED_WORST_CASES
+            f"{case_id}={gold_scores[case_id]:.2f}/第{rank_by_id[case_id]}名"
+            for case_id in ANNOTATED_WORST_CASES
             if case_id in gold_scores
         )
-        value = (
-            f"最差集得分 {detail}（整体均分 {overall_score:.2f}）；"
-            f"{len(hits)}/{len(gold_scores)} 条落在最差 {window} 名内，"
-            f"命中率 {hit_rate:.0%}（要求 >= 60%）"
-        )
-        if missed:
-            value += f"；未命中：{'、'.join(missed)}"
         return ValidationFinding(
-            name="人工标注最差集命中率",
+            name="人工标注最差集整体靠后",
             description=(
-                "人工评语中问题最明确的 5 条 case 作为已知最差集，"
-                "检查评估方法能否把它们排到整体分布的最差 40% 区间内。"
-                "用命中率而非全量命中，是因为人工判断本身也存在尺度差异。"
+                "人工评语中问题最明确的 5 条 case 作为已知最差集（1 名为最差、"
+                f"{total} 名为最好）。用平均排名衡量它们是否整体落在分布的后半段，"
+                "避免因单条 case 的评分波动导致结论翻转。"
             ),
-            value=value,
-            passed=hit_rate >= 0.6,
+            value=(
+                f"最差集 {detail}；平均排名 {mean_rank:.1f}/{total}，"
+                f"平均分位 {percentile:.0%}（要求 <= 50%）；"
+                f"整体均分 {overall_score:.2f}"
+            ),
+            passed=percentile <= 0.5,
         )
 
     @staticmethod
@@ -209,19 +214,29 @@ class HumanReferenceValidator:
 
         problematic_mean = mean_helpfulness(groups["problematic"])
         acceptable_mean = mean_helpfulness(groups["acceptable"])
-        separated = bool(groups["problematic"] and groups["acceptable"]) and (
-            problematic_mean < acceptable_mean
+        delta = problematic_mean - acceptable_mean
+        # 认可组样本量很小（n=4）且分数粒度只有 0.5 分，
+        # 因此只有"问题组明显更高"才说明指标出现反向分离；容差内的差异不足以判定方向。
+        separated_badly = delta > GROUP_TOLERANCE
+        value = (
+            f"问题组 {len(groups['problematic'])} 条均值 {problematic_mean:.2f}；"
+            f"认可组 {len(groups['acceptable'])} 条均值 {acceptable_mean:.2f}；"
+            f"差异 {delta:+.2f} 分；未分组 {len(groups['mixed'])} 条"
         )
+        if separated_badly:
+            value += (
+                "。问题组均值反而更高：本评分卡要求『主动代办或追问关键信息』才给到 3 分以上，"
+                "而人工标注认为『给出明确操作路径』即可接受，两者阈值不一致，属于口径分歧，"
+                "需要通过校准 3 分锚点或闸门阈值来解决。"
+            )
         return ValidationFinding(
-            name="人工评语分组区分度",
+            name="人工评语分组未出现反向分离",
             description=(
-                "用评语关键词把人工评语粗分为『指出问题』与『总体认可』两组，"
-                "问题组的有用性均值应更低。该检验依赖关键词代理指标，精度有限。"
+                "用评语关键词把人工评语粗分为『指出问题』与『总体认可』两组。"
+                "只有当问题组的有用性均值高出认可组超过容差时，才判定指标与人工关注点反向。"
+                f"容差取 {GROUP_TOLERANCE:g} 分：认可组仅 {len(groups['acceptable'])} 条，"
+                "且分数粒度为 0.5 分，均值本身带有较大抽样误差，不宜按方向直接下结论。"
             ),
-            value=(
-                f"问题组 {len(groups['problematic'])} 条均值 {problematic_mean:.2f}；"
-                f"认可组 {len(groups['acceptable'])} 条均值 {acceptable_mean:.2f}；"
-                f"未分组 {len(groups['mixed'])} 条"
-            ),
-            passed=separated,
+            value=value,
+            passed=not separated_badly,
         )

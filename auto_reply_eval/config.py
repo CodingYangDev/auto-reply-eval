@@ -46,6 +46,9 @@ class Settings(BaseSettings):
     dataset_path: Path = PROJECT_ROOT / "task3_auto_replies.json"
     human_ref_path: Path = PROJECT_ROOT / "task3_human_ref.json"
     report_dir: Path = PROJECT_ROOT / "reports"
+    # 裁判响应缓存目录，按运行模式分文件存放，避免 mock 与 real 相互污染
+    cache_dir: Path = PROJECT_ROOT / "cache"
+    use_cache: bool = True
 
     # 评分口径
     worst_case_count: int = 3

@@ -23,6 +23,7 @@ def result(tmp_path_factory: pytest.TempPathFactory) -> EvaluationResult:
         dataset_path=DATASET_PATH,
         human_ref_path=HUMAN_REF_PATH,
         report_dir=tmp_path_factory.mktemp("reports"),
+        cache_dir=tmp_path_factory.mktemp("cache"),
     )
     return EvaluationPipeline.from_settings(settings).run()
 
@@ -70,6 +71,13 @@ def test_worst_cases_are_sorted_ascending(result: EvaluationResult) -> None:
     assert result.worst_cases[0].final_score == min(
         case.final_score for case in result.case_scores
     )
+
+
+def test_validations_cover_all_four_checks(result: EvaluationResult) -> None:
+    assert len(result.validations) == 4
+    names = {finding.name for finding in result.validations}
+    assert "参考回复胜出率（有用性）" in names
+    assert "人工标注最差集整体靠后" in names
 
 
 def test_reports_are_written(

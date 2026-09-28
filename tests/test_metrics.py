@@ -95,3 +95,36 @@ def test_repository_rejects_missing_file(tmp_path: Path) -> None:
     repository = DatasetRepository(tmp_path / "nope.json", tmp_path / "nope2.json")
     with pytest.raises(FileNotFoundError):
         repository.load_cases()
+
+
+def test_cache_client_avoids_duplicate_calls(tmp_path: Path) -> None:
+    """缓存应当让重复的裁判请求不再打到模型上。"""
+
+    from auto_reply_eval.llm.cache import CachedLLMClient
+
+    class CountingClient:
+        def __init__(self) -> None:
+            self.calls = 0
+
+        @property
+        def name(self) -> str:
+            return "counting"
+
+        def complete(self, messages: list[ChatMessage]) -> str:
+            self.calls += 1
+            return "response"
+
+    inner = CountingClient()
+    cache_path = tmp_path / "judge_cache.json"
+    messages = [ChatMessage(role="user", content="问题")]
+
+    cached = CachedLLMClient(inner, cache_path)
+    assert cached.complete(messages) == "response"
+    assert cached.complete(messages) == "response"
+    assert inner.calls == 1
+    assert cached.hits == 1
+
+    # 新进程（新实例）也应当命中磁盘缓存
+    reopened = CachedLLMClient(inner, cache_path)
+    assert reopened.complete(messages) == "response"
+    assert inner.calls == 1
