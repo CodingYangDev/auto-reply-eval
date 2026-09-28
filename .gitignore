@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# 本地密钥与虚拟环境
+.env
+.venv/
+venv/
+
+# 编辑器
+.idea/
+.vscode/
+
+*.log

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>客服自动回复质量评估报告</title>
+<style>
+:root {
+  --bg: #0f1115; --panel: #171a21; --panel-2: #1e222b; --line: #2a2f3a;
+  --text: #e8eaed; --muted: #9aa3b2; --good: #35c26b; --warn: #e0a020; --bad: #e05a5a;
+  --accent: #4a9eff;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 32px 20px 64px; background: var(--bg); color: var(--text);
+  font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", system-ui, sans-serif;
+  line-height: 1.7;
+}
+.wrap { max-width: 1080px; margin: 0 auto; }
+h1 { font-size: 26px; margin: 0 0 8px; }
+h2 { font-size: 19px; margin: 36px 0 12px; padding-left: 10px; border-left: 4px solid var(--accent); }
+h3 { font-size: 16px; margin: 22px 0 8px; }
+.meta { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+.meta code { background: var(--panel-2); padding: 2px 6px; border-radius: 4px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin: 18px 0 8px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
+.card .k { color: var(--muted); font-size: 13px; }
+.card .v { font-size: 30px; font-weight: 700; margin-top: 4px; }
+.card .v small { font-size: 14px; color: var(--muted); font-weight: 400; }
+table { width: 100%; border-collapse: collapse; margin: 10px 0 6px; font-size: 14px; background: var(--panel); }
+th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: var(--panel-2); color: var(--muted); font-weight: 600; white-space: nowrap; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.bar { display: flex; align-items: center; gap: 8px; }
+.bar .fill { height: 12px; border-radius: 6px; background: var(--accent); min-width: 1px; }
+.bar .fill.low { background: var(--bad); }
+.bar .fill.mid { background: var(--warn); }
+.bar .fill.high { background: var(--good); }
+.case { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; margin: 14px 0; }
+.case .score { float: right; font-size: 22px; font-weight: 700; }
+.case .score.bad { color: var(--bad); }
+.case .score.mid { color: var(--warn); }
+.case .score.good { color: var(--good); }
+.q { color: var(--muted); font-size: 13px; }
+.reply { background: var(--panel-2); border-radius: 8px; padding: 10px 12px; margin: 6px 0 12px; }
+ul { margin: 6px 0 6px 20px; padding: 0; }
+li { margin: 4px 0; }
+.pass { color: var(--good); font-weight: 600; }
+.fail { color: var(--bad); font-weight: 600; }
+.pill { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; border: 1px solid var(--line); color: var(--muted); }
+.footer { color: var(--muted); font-size: 12px; margin-top: 40px; border-top: 1px solid var(--line); padding-top: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>客服自动回复质量评估报告</h1>
+  <p class="meta">
+    生成时间 2026-09-28 18:29:42 ·
+    运行模式 <code>mock</code> ·
+    裁判模型 <code>mock-heuristic-judge (offline)</code> ·
+    样本量 20 条
+  </p>
+
+  <div class="cards">
+    <div class="card"><div class="k">整体得分</div>
+      <div class="v">3.99<small> / 5</small></div></div>
+    <div class="card"><div class="k">及格率（>= 3.5 分）</div>
+      <div class="v">75%</div></div>
+    <div class="card"><div class="k">人工参考回复整体分</div><div class="v">4.59<small> / 5</small></div></div>
+  </div>
+
+  <h2>1. 结论与建议</h2>
+  <ul><li>四个指标中「有用（主动推进解决）」是明显短板（均值 3.05），与表现最好的「准确（对题且无误导）」（均值 4.90）相差 1.85 分。</li><li>有用性的典型病灶是『只告知、不办理』：回复普遍没有主动查询用户的订单、物流或商品参数，而是把操作成本推回用户，这与人工评语反复指出的问题一致。</li><li>准确性与无幻觉两项均表现良好，说明当前风险不在于『说错话』，而在于『没办事』。</li><li>与人工参考回复相比整体落后 0.60 分，其中有用性一项就差了 1.08 分，差距集中体现在是否主动代办。</li><li>有用性均值低于及格线，建议先补齐主动代办能力（订单查询、物流查询、商品参数检索），再考虑扩大自动回复覆盖范围。</li><li>及格率 75% 低于 80%，当前不建议直接扩大覆盖范围；可按指标逐项补齐后重新评估。</li></ul>
+
+  <h2>2. 指标总览</h2>
+  <table><thead><tr><th>指标</th><th class="num">权重</th><th class="num">均值</th>
+  <th class="num">最低</th><th class="num">最高</th></tr></thead>
+  <tbody><tr><td>不瞎编（无幻觉）</td><td class='num'>0.25</td><td class='num'>4.85</td><td class='num'>3.5</td><td class='num'>5</td></tr><tr><td>准确（对题且无误导）</td><td class='num'>0.25</td><td class='num'>4.90</td><td class='num'>3</td><td class='num'>5</td></tr><tr><td>有用（主动推进解决）</td><td class='num'>0.35</td><td class='num'>3.05</td><td class='num'>2</td><td class='num'>4.5</td></tr><tr><td>语气好（共情与礼貌）</td><td class='num'>0.15</td><td class='num'>4.55</td><td class='num'>3</td><td class='num'>5</td></tr></tbody></table>
+
+  <h2>3. 各指标分布</h2>
+  <h3>不瞎编（无幻觉）<span class="pill" style="margin-left:8px">均值 4.85 · 权重 0.25</span></h3><table><thead><tr><th class="num">分值</th><th class="num">条数</th><th>分布</th></tr></thead><tbody><tr><td class="num">5</td><td class="num">16</td><td><div class="bar"><div class="fill high" style="width:80%"></div></div></td></tr><tr><td class="num">4.5</td><td class="num">3</td><td><div class="bar"><div class="fill high" style="width:15%"></div></div></td></tr><tr><td class="num">4</td><td class="num">0</td><td><div class="bar"><div class="fill high" style="width:0%"></div></div></td></tr><tr><td class="num">3.5</td><td class="num">1</td><td><div class="bar"><div class="fill mid" style="width:5%"></div></div></td></tr><tr><td class="num">3</td><td class="num">0</td><td><div class="bar"><div class="fill mid" style="width:0%"></div></div></td></tr><tr><td class="num">2.5</td><td class="num">0</td><td><div class="bar"><div class="fill low" style="width:0%"></div></div></td></tr><tr><td class="num">2</td><td class="num">0</td><td><div class="bar"><div class="fill low" style="width:0%"></div></div></td></tr><tr><td class="num">1.5</td><td class="num">0</td><td><div class="bar"><div class="fill low" style="width:0%"></div></div></td></tr><tr><td class="num">1</td><td class="num">0</td><td><div class="bar"><div class="fill low" style="width:0%"></div></div></td></tr></tbody></table><h3>准确（对题且无误导）<span class="pill" style="margin-left:8px">均值 4.90 · 权重 0.25</span></h3><table><thead><tr><th class="num">分值</th><th class="num">条数</th><th>分布</th></tr></thead><tbody><tr><td class="num">5</td><td class="num">19</td><td><div class="bar"><div class="fill high" style="width:95%"></div></div></td></tr><tr><td class="num">4.5</td><td class="num">0</td><td><div class="bar"><div class="fill high" style="width:0%"></div></div></td></tr><tr><td class="num">4</td><td class="num">0</td><td><div class="bar"><div class="fill high" style="width:0%"></div></div></td></tr><tr><td class="num">3.5</td><td class="num">0</td><td><div class="bar"><div class="fill mid" style="width:0%"></div></div></td></tr><tr><td class="num">3</td><td class="num">1</td><td><div class="bar"><div class="fill mid" style="width:5%"></div></div></td></tr><tr><td class="num">2.5</td><td class="num">0</td><td><div class="bar"><div class="fill low" style="width:0%"></div></div></td></tr><tr><td class="num">2</td><td class="num">0</td><td><div class="bar"><div class="fill low" style="width:0%"></div></div></td></tr><tr><td class="num">1.5</td><td class="num">0</td><td><div class="bar"><div class="fill low" style="width:0%"></div></div></td></tr><tr><td class="num">1</td><td class="num">0</td><td><div class="bar"><div class="fill low" style="width:0%"></div></div></td></tr></tbody></table><h3>有用（主动推进解决）<span class="pill" style="margin-left:8px">均值 3.05 · 权重 0.35</span></h3><table><thead><tr><th class="num">分值</th><th class="num">条数</th><th>分布</th></tr></thead><tbody><tr><td class="num">5</td><td class="num">0</td><td><div class="bar"><div class="fill high" style="width:0%"></div></div></td></tr><tr><td class="num">4.5</td><td class="num">1</td><td><div class="bar"><div class="fill high" style="width:5%"></div></div></td></tr><tr><td class="num">4</td><td class="num">1</td><td><div class="bar"><div class="fill high" style="width:5%"></div></div></td></tr><tr><td class="num">3.5</td><td class="num">4</td><td><div class="bar"><div class="fill mid" style="width:20%"></div></div></td></tr><tr><td class="num">3</td><td class="num">9</td><td><div class="bar"><div class="fill mid" style="width:45%"></div></div></td></tr><tr><td class="num">2.5</td><td class="num">3</td><td><div class="bar"><div class="fill low" style="width:15%"></div></div></td></tr><tr><td class="num">2</td><td class="num">2</td><td><div class="bar"><div class="fill low" style="width:10%"></div></div></td></tr><tr><td class="num">1.5</td><td class="num">0</td><td><div class="bar"><div class="fill low" style="width:0%"></div></div></td></tr><tr><td class="num">1</td><td class="num">0</td><td><div class="bar"><div class="fill low" style="width:0%"></div></div></td></tr></tbody></table><h3>语气好（共情与礼貌）<span class="pill" style="margin-left:8px">均值 4.55 · 权重 0.15</span></h3><table><thead><tr><th class="num">分值</th><th class="num">条数</th><th>分布</th></tr></thead><tbody><tr><td class="num">5</td><td class="num">14</td><td><div class="bar"><div class="fill high" style="width:70%"></div></div></td></tr><tr><td class="num">4.5</td><td class="num">2</td><td><div class="bar"><div class="fill high" style="width:10%"></div></div></td></tr><tr><td class="num">4</td><td class="num">0</td><td><div class="bar"><div class="fill high" style="width:0%"></div></div></td></tr><tr><td class="num">3.5</td><td class="num">0</td><td><div class="bar"><div class="fill mid" style="width:0%"></div></div></td></tr><tr><td class="num">3</td><td class="num">4</td><td><div class="bar"><div class="fill mid" style="width:20%"></div></div></td></tr><tr><td class="num">2.5</td><td class="num">0</td><td><div class="bar"><div class="fill low" style="width:0%"></div></div></td></tr><tr><td class="num">2</td><td class="num">0</td><td><div class="bar"><div class="fill low" style="width:0%"></div></div></td></tr><tr><td class="num">1.5</td><td class="num">0</td><td><div class="bar"><div class="fill low" style="width:0%"></div></div></td></tr><tr><td class="num">1</td><td class="num">0</td><td><div class="bar"><div class="fill low" style="width:0%"></div></div></td></tr></tbody></table>
+
+  <h2>4. 最差 3 条 case 及分析</h2>
+  <div class="case"><span class="score mid">3.06</span><h3>1. case_08</h3><p class="q">用户问题：这个手机壳是硅胶的还是塑料的</p><div class="reply">您好，这款手机壳采用的是TPU软胶材质，具有较好的防摔性能和手感。如果您需要更具体的材质信息，可以查看商品详情页的参数说明，或联系客服获取。</div><table><thead><tr><th>指标</th><th class='num'>得分</th><th>裁判判据</th></tr></thead><tbody><tr><td>faithfulness</td><td class='num'>4.5</td><td>存在需核实的断言：断言了具体商品的材质/参数，但缺少商品库依据可追溯。</td></tr><tr><td>accuracy</td><td class='num'>5</td><td>回复方向与用户诉求一致，未发现事实性错误或误导性表述。</td></tr><tr><td>helpfulness</td><td class='num'>2</td><td>存在自助引导（商品详情页、联系客服）。</td></tr><tr><td>tone</td><td class='num'>5</td><td>语气礼貌专业，情绪场景的回应也基本到位。</td></tr></tbody></table><p><b>闸门惩罚</b></p><ul><li>有用（主动推进解决） 2 分低于底线 3 分，总分 ×0.8</li></ul><p><b>缺失的关键动作</b></p><ul><li>未主动协助查询用户的具体订单/商品，把操作成本转移给了用户</li><li>未主动代办，也未追问办成事所需的关键信息（订单号等）</li></ul><p class="q">人工参考回复</p><div class="reply">这款手机壳是TPU软胶材质的，防摔性能和手感都不错。</div><p class="q">人工评语：用户问的是具体商品的具体问题，人工回复直接查了商品参数给出明确答案。自动回复说&#x27;可以查看商品详情页&#x27;——用户就是因为不想自己翻详情页才来问的。这是典型的&#x27;正确但没用&#x27;的回复。</p></div><div class="case"><span class="score mid">3.06</span><h3>2. case_01</h3><p class="q">用户问题：我的快递到了但是放错快递柜了，取不出来</p><div class="reply">您好，如果快递放错了快递柜，您可以尝试联系快递员重新派送，或者到放错的快递柜去取。建议您先查看取件码确认具体位置。如果无法解决，请联系我们的客服，我们会协助您处理。</div><table><thead><tr><th>指标</th><th class='num'>得分</th><th>裁判判据</th></tr></thead><tbody><tr><td>faithfulness</td><td class='num'>5</td><td>未发现无依据的事实性断言，也没有超出平台能力的承诺。</td></tr><tr><td>accuracy</td><td class='num'>5</td><td>回复方向与用户诉求一致，未发现事实性错误或误导性表述。</td></tr><tr><td>helpfulness</td><td class='num'>2.5</td><td>存在自助引导（请联系）。</td></tr><tr><td>tone</td><td class='num'>3</td><td>用户带有明显情绪，回复未做任何安抚，仅陈述规则。</td></tr></tbody></table><p><b>闸门惩罚</b></p><ul><li>有用（主动推进解决） 2.5 分低于底线 3 分，总分 ×0.8</li></ul><p><b>缺失的关键动作</b></p><ul><li>未主动协助查询用户的具体订单/商品，把操作成本转移给了用户</li><li>未主动代办，也未追问办成事所需的关键信息（订单号等）</li></ul><p class="q">人工参考回复</p><div class="reply">这种情况我帮您联系快递公司重新派送到您附近的快递柜或者送货上门，预计需要1-2天。请您提供一下订单号，我来帮您处理。</div><p class="q">人工评语：用户的核心诉求是取不到快递，需要的是&#x27;帮我解决&#x27;而非&#x27;自己去想办法&#x27;。自动回复把责任推给了用户，没有体现主动服务意识。</p></div><div class="case"><span class="score mid">3.06</span><h3>3. case_13</h3><p class="q">用户问题：我买的面膜成分表能发给我看看吗我皮肤敏感</p><div class="reply">您好，面膜的成分表可以在商品详情页查看。如果您对特定成分过敏，建议您在购买前仔细核对成分表，或先购买小样进行皮肤测试。如需更详细的成分信息，可以联系品牌官方客服。</div><table><thead><tr><th>指标</th><th class='num'>得分</th><th>裁判判据</th></tr></thead><tbody><tr><td>faithfulness</td><td class='num'>5</td><td>未发现无依据的事实性断言，也没有超出平台能力的承诺。</td></tr><tr><td>accuracy</td><td class='num'>5</td><td>回复方向与用户诉求一致，未发现事实性错误或误导性表述。</td></tr><tr><td>helpfulness</td><td class='num'>2.5</td><td>存在自助引导（商品详情页）。</td></tr><tr><td>tone</td><td class='num'>3</td><td>用户带有明显情绪，回复未做任何安抚，仅陈述规则。</td></tr></tbody></table><p><b>闸门惩罚</b></p><ul><li>有用（主动推进解决） 2.5 分低于底线 3 分，总分 ×0.8</li></ul><p><b>缺失的关键动作</b></p><ul><li>未主动协助查询用户的具体订单/商品，把操作成本转移给了用户</li><li>未主动代办，也未追问办成事所需的关键信息（订单号等）</li></ul><p class="q">人工参考回复</p><div class="reply">我帮您查一下这款面膜的成分。主要成分是XX，不含酒精和香精。如果您对某个成分过敏，可以告诉我，我帮您确认。</div><p class="q">人工评语：用户明确说了皮肤敏感，这是一个需要个性化关注的场景。自动回复让用户自己去看详情页，没有体现对用户特殊需求的关注。人工回复会主动查询成分并提供个性化建议。</p></div>
+  
+
+  <h2>5. 与人工标注的一致性校验</h2>
+  <table><thead><tr><th>校验项</th><th>结果</th><th>结论</th></tr></thead>
+  <tbody><tr><td>参考回复胜出率（有用性）</td><td>17/20 条中参考回复更高，胜出率 85%（要求 &gt;= 80%）</td><td class='pass'>通过</td></tr><tr><td>参考回复有用性领先幅度</td><td>平均领先 +1.07 分（要求 &gt;= +0.50 分）</td><td class='pass'>通过</td></tr><tr><td>人工标注最差集命中率</td><td>最差集得分 case_01=3.06、case_08=3.06、case_13=3.06、case_17=4.30、case_20=3.80（整体均分 3.99）；4/5 条落在最差 8 名内，命中率 80%（要求 &gt;= 60%）；未命中：case_17</td><td class='pass'>通过</td></tr><tr><td>人工评语分组区分度</td><td>问题组 13 条均值 3.00；认可组 4 条均值 3.12；未分组 3 条</td><td class='pass'>通过</td></tr></tbody></table>
+
+  <h2>6. 评分卡（指标定义与优先级）</h2>
+  <table><thead><tr><th>优先级</th><th>指标</th><th class='num'>权重</th><th>定义</th><th>量化方式</th></tr></thead><tbody><tr><td>1</td><td>不瞎编（无幻觉）</td><td class='num'>0.25</td><td>回复中出现的所有事实性断言——政策条款、时限、金额、商品参数、赔付承诺——是否都有依据，没有凭空编造，也没有平台无法兑现的过度承诺。</td><td>裁判先抽取回复中的事实性断言，逐条判定『有依据 / 需人工核实 / 无依据编造』；1-5 分制，出现无依据的具体承诺或虚构的商品参数直接压到 2 分以下，无法从现有资料核实的具体数值按条轻微扣分。</td></tr><tr><td>2</td><td>准确（对题且无误导）</td><td class='num'>0.25</td><td>回复是否直接命中用户的真实诉求，且陈述正确、没有遗漏关键前提导致用户误解。它同时覆盖『答到点上』（相关性）与『说得对』（事实正确性）两面。</td><td>裁判对照用户问题与回复，分别判定『是否答到点上』与『陈述是否有误』；答非所问、或遗漏关键条件（例如把已过期的规则说成通用规则）逐项扣分。</td></tr><tr><td>3</td><td>有用（主动推进解决）</td><td class='num'>0.35</td><td>回复是否真正推动问题被解决：主动给出确定性结论、主动代办（查订单/查物流/查商品参数），或主动追问办成事所需的关键信息（订单号、具体商品）；而不是把操作成本转移回用户——『请看商品详情页』『请联系客服』『请您自行确认』。</td><td>裁判识别回复中的推进动作与推诿动作，按净倾向打分：主动代办 / 追问关键信息 / 给出确定结论加分，引导自助 / 甩给其他渠道减分；当用户问的是『我的』具体问题时，推诿的扣分更重。</td></tr><tr><td>4</td><td>语气好（共情与礼貌）</td><td class='num'>0.15</td><td>语气是否礼貌、专业，并且在用户带有情绪时（投诉、着急、焦虑、涉及敏感信息）给出针对性的共情与安抚，而不是只输出冷冰冰的条款。</td><td>裁判检查两点：①基础礼貌（问候、致歉、感谢）；②对用户情绪的针对性回应。用户明显带情绪而回复完全没有安抚时显著扣分。</td></tr></tbody></table>
+
+  <h2>7. 局限性</h2>
+  <ul><li>**依赖裁判模型的能力**：四个指标都由 LLM 裁判打分，模型自身的偏见、对『平台规则是否属实』的无知都会传导到结果上。本轮 20 条回复的政策类断言（退款时长、质保天数、充电宝限额）无法从给定资料核实，只能判定为『有依据但未验证』。</li><li>**无法核验具体商品事实**：像「这款手机壳是 TPU 材质」这类断言，是否属实取决于商品库。评估只基于对话文本，无法访问商品数据，因此这类回复在『不瞎编』上只能给中性评价，真实幻觉会被漏判。</li><li>**『有用性』高度依赖上下文**：主动代办需要后台工单、订单查询等能力支撑。如果自动回复根本没有查询权限，那么推给用户看详情页其实是系统能力问题，而不是话术问题。当前指标无法区分『不想办』与『办不到』，会把系统缺陷记在话术头上。</li><li>**单轮评估的局限**：只看一问一答，看不到后续是否真的解决了问题、用户是否二次投诉。回复『有用』与否的最终判据其实是会话闭环结果。</li><li>**领域适配**：关键词代理与锚点描述都是围绕电商客服场景写的，迁移到金融、医疗等场景需要重新校准，尤其是『准确性』的判据。</li></ul>
+
+  <h2>8. 改进方向</h2>
+  <ul><li>接入商品库、政策库做检索增强校验，把『不瞎编』从主观判断变成可核对的引用匹配。</li><li>引入会话级指标：一次解决率、转人工率、后续 24 小时重复咨询率，用真实业务结果校准『有用性』。</li><li>用人工标注扩充样本，计算评估结论与人工结论的 Spearman 相关系数，为指标权重做数据驱动的标定，而不是靠拍脑袋。</li><li>对同一批数据做多次重复评判，统计分数方差，量化裁判模型的稳定性（当前是单次评判）。</li><li>把 LLM 裁判换成一主一复核的双模型投票，减少单模型偏见。</li></ul>
+
+  <h2>9. 全部 case 明细（按总分升序）</h2>
+  <table><thead><tr><th class="num">排名</th><th>case</th><th class="num">不瞎编</th>
+  <th class="num">准确</th><th class="num">有用</th><th class="num">语气</th>
+  <th class="num">总分</th></tr></thead>
+  <tbody><tr><td class='num'>1</td><td>case_01</td><td class='num'>5</td><td class='num'>5</td><td class='num'>2.5</td><td class='num'>3</td><td class='num'>3.06</td></tr><tr><td class='num'>2</td><td>case_08</td><td class='num'>4.5</td><td class='num'>5</td><td class='num'>2</td><td class='num'>5</td><td class='num'>3.06</td></tr><tr><td class='num'>3</td><td>case_13</td><td class='num'>5</td><td class='num'>5</td><td class='num'>2.5</td><td class='num'>3</td><td class='num'>3.06</td></tr><tr><td class='num'>4</td><td>case_19</td><td class='num'>5</td><td class='num'>5</td><td class='num'>2</td><td class='num'>5</td><td class='num'>3.16</td></tr><tr><td class='num'>5</td><td>case_14</td><td class='num'>5</td><td class='num'>5</td><td class='num'>2.5</td><td class='num'>4.5</td><td class='num'>3.24</td></tr><tr><td class='num'>6</td><td>case_20</td><td class='num'>5</td><td class='num'>3</td><td class='num'>3</td><td class='num'>5</td><td class='num'>3.80</td></tr><tr><td class='num'>7</td><td>case_07</td><td class='num'>5</td><td class='num'>5</td><td class='num'>3</td><td class='num'>3</td><td class='num'>4.00</td></tr><tr><td class='num'>8</td><td>case_12</td><td class='num'>5</td><td class='num'>5</td><td class='num'>3</td><td class='num'>3</td><td class='num'>4.00</td></tr><tr><td class='num'>9</td><td>case_15</td><td class='num'>3.5</td><td class='num'>5</td><td class='num'>3.5</td><td class='num'>4.5</td><td class='num'>4.03</td></tr><tr><td class='num'>10</td><td>case_02</td><td class='num'>4.5</td><td class='num'>5</td><td class='num'>3</td><td class='num'>5</td><td class='num'>4.17</td></tr><tr><td class='num'>11</td><td>case_03</td><td class='num'>4.5</td><td class='num'>5</td><td class='num'>3</td><td class='num'>5</td><td class='num'>4.17</td></tr><tr><td class='num'>12</td><td>case_06</td><td class='num'>5</td><td class='num'>5</td><td class='num'>3</td><td class='num'>5</td><td class='num'>4.30</td></tr><tr><td class='num'>13</td><td>case_10</td><td class='num'>5</td><td class='num'>5</td><td class='num'>3</td><td class='num'>5</td><td class='num'>4.30</td></tr><tr><td class='num'>14</td><td>case_16</td><td class='num'>5</td><td class='num'>5</td><td class='num'>3</td><td class='num'>5</td><td class='num'>4.30</td></tr><tr><td class='num'>15</td><td>case_17</td><td class='num'>5</td><td class='num'>5</td><td class='num'>3</td><td class='num'>5</td><td class='num'>4.30</td></tr><tr><td class='num'>16</td><td>case_09</td><td class='num'>5</td><td class='num'>5</td><td class='num'>3.5</td><td class='num'>5</td><td class='num'>4.47</td></tr><tr><td class='num'>17</td><td>case_11</td><td class='num'>5</td><td class='num'>5</td><td class='num'>3.5</td><td class='num'>5</td><td class='num'>4.47</td></tr><tr><td class='num'>18</td><td>case_18</td><td class='num'>5</td><td class='num'>5</td><td class='num'>3.5</td><td class='num'>5</td><td class='num'>4.47</td></tr><tr><td class='num'>19</td><td>case_04</td><td class='num'>5</td><td class='num'>5</td><td class='num'>4</td><td class='num'>5</td><td class='num'>4.65</td></tr><tr><td class='num'>20</td><td>case_05</td><td class='num'>5</td><td class='num'>5</td><td class='num'>4.5</td><td class='num'>5</td><td class='num'>4.83</td></tr></tbody></table>
+
+  <p class="footer">
+    本报告由 auto_reply_eval 自动生成。指标定义、量化方式与权重均可通过
+    <code>auto_reply_eval/metrics/definitions.py</code> 调整。
+  </p>
+</div>
+</body>
+</html>
