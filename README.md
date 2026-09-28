@@ -346,7 +346,7 @@ project/
 | 任务要求的交付物 | 状态 | 位置 |
 | --- | --- | --- |
 | ① README（指标定义及理由 / 评估方法 / 局限性 / AI 工具使用情况） | 已完成 | 本文档 |
-| ② 开发工具截图（IDE / Agent / 终端） | 未附带截图；开发过程见提交历史 | `git log --oneline`（11 次提交） |
+| ② 开发工具截图（IDE / Agent / 终端） | 未附带截图；开发过程见提交历史 | `git log --oneline` |
 | ③ 运行结果截图（评估报告、各指标得分） | ✅ 已完成（6 张） | `docs/screenshots/` |
 | ④ 线上地址或 GitHub 链接 | ✅ 已完成 | 仓库 <https://github.com/CodingYangDev/auto-reply-eval> · 线上报告 <https://codingyangdev.github.io/auto-reply-eval/> |
 
@@ -422,9 +422,9 @@ git push origin main    # 推送后由 Actions 自动发布，约 1 分钟生效
 本项目在 **Trae** 中开发，出于提交材料精简的考虑，**仓库未附带 IDE / 终端截图**。
 开发过程可通过以下方式查看：
 
-1. **提交历史**：`git log --oneline` 共 11 次提交，完整记录了从接口接入、
-   指标口径设计、裁判稳定性修复、报告产物补齐到 Pages 部署的过程，
-   例如 `feat: 接入真实 LLM 裁判并保证评估可复现`、
+1. **提交历史**：`git log --oneline` 记录了从接口接入、指标口径设计、裁判稳定性修复、
+   报告产物补齐到 Pages 部署的完整过程，例如
+   `feat: 接入真实 LLM 裁判并保证评估可复现`、
    `refactor: mock 模式不再套响应缓存`；
 2. **真实运行产物**：`reports/` 三份报告 + 6 张运行截图 + 线上报告页面，
    全部由程序实际跑出（非手工编写）。
