@@ -268,6 +268,7 @@ project/
 ├── tests/                      # 16 个 pytest 用例
 ├── reports/                    # 生成的报告产物
 ├── docs/                       # GitHub Pages 站点：index.html（报告）+ screenshots/（截图，交付物 ③）
+├── .github/workflows/          # publish-pages.yml：docs/ 变化时自动同步到 gh-pages
 ├── cache/                      # 裁判响应缓存（保证报告可复现）
 ├── task3_auto_replies.json     # 输入：20 条自动回复
 ├── task3_human_ref.json        # 输入：人工参考回复 + 评语
@@ -414,12 +415,16 @@ python -m http.server 8765 --directory reports
 - 线上报告：<https://codingyangdev.github.io/auto-reply-eval/>
 
 站点内容来自 `docs/`：流水线每次运行都会额外把报告写一份到 `docs/index.html`。
-Pages 的发布源是 `gh-pages` 分支，因此更新报告后需要同步一次站点：
+Pages 的发布源是 `gh-pages` 分支，仓库里的 `.github/workflows/publish-pages.yml`
+会在 `docs/` 发生变化时**自动**把它同步过去，因此日常只需要：
 
 ```bash
-git push origin main                            # 更新代码与报告
-git subtree push --prefix docs origin gh-pages   # 同步站点内容（约 30 秒后生效）
+git push origin main    # 推送后由 Actions 自动发布，约 1 分钟生效
 ```
+
+> 想手动同步也可以：`git subtree push --prefix docs origin gh-pages`。
+> 推送 `gh-pages` 后 GitHub 会在仓库页提示 "Create a pull request for 'gh-pages'"，
+> 这是分支对比的常规提示，**与本项目无关，忽略即可**，不要合并。
 
 ### 待补截图（截图 1）的截取要求
 
@@ -453,8 +458,11 @@ git subtree push --prefix docs origin gh-pages   # 同步站点内容（约 30 �
    ```bash
    git remote add origin git@github.com:CodingYangDev/auto-reply-eval.git
    git push -u origin main
-   git subtree push --prefix docs origin gh-pages   # 生成站点分支，Pages 会自动启用
+   git subtree push --prefix docs origin gh-pages   # 首次生成站点分支，Pages 会自动启用
    ```
+
+   > 首次之后不用再手动跑最后一条：`docs/` 有变化时
+   > `.github/workflows/publish-pages.yml` 会自动同步。
 
    > 如果本机配置过 `url.https://github.com/.insteadOf git@github.com:`
    > 这类重写规则，`git@github.com:` 会被悄悄改成 HTTPS 从而要求输入 Token。
