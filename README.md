@@ -15,6 +15,10 @@
 > **线上报告：<https://codingyangdev.github.io/auto-reply-eval/>** ·
 > 仓库：<https://github.com/CodingYangDev/auto-reply-eval>
 
+**任务实现形式简述（147 字）**
+
+> 把模糊要求量化为 4 个评估指标（不瞎编、准确、有用、语气），用 LLM 裁判逐条打分并借人工参考回复校验口径。代码按配置、数据、裁判、评判、聚合、校验、报告分层；支持真实模型与离线 mock 两种模式，带缓存保证可复现；产出 Markdown/HTML/JSON 报告，测试全通过，已部署线上。
+
 **目录**：0 结论摘要（含得分解读） · 1 快速开始 · 2 指标定义及理由 · 3 评估方法 ·
 4 局限性讨论 · 5 AI 工具使用情况 · 6 交付物清单与截图 · 7 如何调整评分口径
 
@@ -363,9 +367,9 @@ project/
 截图 1：开发工具——Trae / Agent 界面（左侧项目文件树）+ 终端
 （`python -m auto_reply_eval.cli --mode real` 与 `python -m pytest tests -q`）
 
-![开发工具与终端](docs/screenshots/01_devtools.png)
-
-> 该文件需自行截取并放入 `docs/screenshots/01_devtools.png`，放入后本图即正常显示。
+> **待补充**：这张图需自行截取。截好后存为 `docs/screenshots/01_devtools.png`，
+> 并把本行替换成 `![开发工具与终端](docs/screenshots/01_devtools.png)` 即会正常显示。
+> （此处先不放图片引用，是为了避免文件缺位时 README 出现裂图。制作步骤见文末。）
 
 **运行结果**（均由 `reports/eval_report.html` 实际渲染后截取）
 
