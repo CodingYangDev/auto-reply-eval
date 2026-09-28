@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 from auto_reply_eval.models import EvaluationResult
-from auto_reply_eval.reporting.notes import build_conclusions
+from auto_reply_eval.reporting.notes import build_conclusions, describe_band
 
 _LINE = "=" * 78
 _SUB = "-" * 78
@@ -45,6 +45,8 @@ def render_console(result: EvaluationResult) -> str:
             f"{statistics.label:<18}{statistics.weight:>6g}{statistics.mean:>8.2f}"
             f"{statistics.minimum:>8g}{statistics.maximum:>8g}"
         )
+
+    lines += ["", _SUB, "得分解读", _SUB, f"- {describe_band(result.overall_score)}"]
 
     lines += ["", _SUB, "结论与建议", _SUB]
     for conclusion in build_conclusions(result):

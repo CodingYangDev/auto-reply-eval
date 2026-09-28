@@ -48,6 +48,9 @@ li { margin: 4px 0; }
 .pass { color: var(--good); font-weight: 600; }
 .fail { color: var(--bad); font-weight: 600; }
 .pill { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; border: 1px solid var(--line); color: var(--muted); }
+.band { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--warn);
+        border-radius: 8px; padding: 12px 16px; margin: 14px 0 4px; font-size: 15px; }
+.band b { color: var(--warn); }
 .footer { color: var(--muted); font-size: 12px; margin-top: 40px; border-top: 1px solid var(--line); padding-top: 14px; }
 </style>
 </head>
@@ -55,7 +58,7 @@ li { margin: 4px 0; }
 <div class="wrap">
   <h1>客服自动回复质量评估报告</h1>
   <p class="meta">
-    生成时间 2026-09-28 18:41:46 ·
+    生成时间 2026-09-28 18:44:43 ·
     运行模式 <code>real</code> ·
     裁判模型 <code>deepseek-chat @ https://api.deepseek.com/v1</code> ·
     样本量 20 条
@@ -69,8 +72,12 @@ li { margin: 4px 0; }
     <div class="card"><div class="k">人工参考回复整体分</div><div class="v">4.34<small> / 5</small></div></div>
   </div>
 
+  <p class="band">得分解读：<b>不建议扩量（&gt;= 2.5 分）：用户仍需大量自助操作，扩量会放大人工工单量与客诉风险。</b></p>
+
   <h2>1. 结论与建议</h2>
   <ul><li>四个指标中「有用（主动推进解决）」是明显短板（均值 2.33），与表现最好的「不瞎编（无幻觉）」（均值 4.47）相差 2.15 分。</li><li>有用性的典型病灶是『只告知、不办理』：回复普遍没有主动查询用户的订单、物流或商品参数，而是把操作成本推回用户，这与人工评语反复指出的问题一致。</li><li>与人工参考回复相比整体落后 1.47 分，其中有用性一项就差了 2.17 分，差距集中体现在是否主动代办。</li><li>有用性均值低于及格线，建议先补齐主动代办能力（订单查询、物流查询、商品参数检索），再考虑扩大自动回复覆盖范围。</li><li>及格率 15% 低于 80%，当前不建议直接扩大覆盖范围；可按指标逐项补齐后重新评估。</li></ul>
+  <table><thead><tr><th class="num">总分区间</th><th>结论</th><th>建议动作</th></tr></thead>
+  <tbody><tr><td class='num'>&gt;= 4.2</td><td>可扩量</td><td>质量已达到可替代人工的水平，可以扩大自动回复覆盖范围。</td></tr><tr><td class='num'>&gt;= 3.5</td><td>有条件扩量</td><td>可先在高频、信息型问题上灰度，同时补齐短板指标。</td></tr><tr><td class='num'>&gt;= 2.5</td><td>不建议扩量</td><td>用户仍需大量自助操作，扩量会放大人工工单量与客诉风险。</td></tr><tr><td class='num'>&gt;= 1</td><td>不可用</td><td>存在明显质量问题或误导风险，需要先整改再评估。</td></tr></tbody></table>
 
   <h2>2. 指标总览</h2>
   <table><thead><tr><th>指标</th><th class="num">权重</th><th class="num">均值</th>

@@ -6,7 +6,9 @@ from auto_reply_eval.models import EvaluationResult, MetricName, MetricStatistic
 from auto_reply_eval.reporting.notes import (
     IMPROVEMENTS,
     LIMITATIONS,
+    SCORE_BANDS,
     build_conclusions,
+    describe_band,
 )
 
 _BAR_UNIT = "█"
@@ -61,6 +63,11 @@ def render_markdown(result: EvaluationResult) -> str:
             f"| {statistics.label} | {statistics.weight:g} | {statistics.mean:.2f} "
             f"| {statistics.minimum:g} | {statistics.maximum:g} |"
         )
+
+    lines += ["", "**得分解读**", "", f"- {describe_band(result.overall_score)}"]
+    lines += ["", "| 总分区间 | 结论 | 建议动作 |", "| ---: | --- | --- |"]
+    for threshold, label, advice in SCORE_BANDS:
+        lines.append(f"| >= {threshold:g} | {label} | {advice} |")
 
     lines += ["", "**结论与建议**", ""]
     lines += [f"- {item}" for item in build_conclusions(result)]

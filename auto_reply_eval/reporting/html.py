@@ -8,7 +8,13 @@ from __future__ import annotations
 from html import escape
 
 from auto_reply_eval.models import EvaluationResult, MetricDefinition, MetricName, MetricStatistics
-from auto_reply_eval.reporting.notes import IMPROVEMENTS, LIMITATIONS, build_conclusions
+from auto_reply_eval.reporting.notes import (
+    IMPROVEMENTS,
+    LIMITATIONS,
+    SCORE_BANDS,
+    build_conclusions,
+    describe_band,
+)
 
 _STYLE = """
 :root {
@@ -54,6 +60,9 @@ li { margin: 4px 0; }
 .pass { color: var(--good); font-weight: 600; }
 .fail { color: var(--bad); font-weight: 600; }
 .pill { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; border: 1px solid var(--line); color: var(--muted); }
+.band { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--warn);
+        border-radius: 8px; padding: 12px 16px; margin: 14px 0 4px; font-size: 15px; }
+.band b { color: var(--warn); }
 .footer { color: var(--muted); font-size: 12px; margin-top: 40px; border-top: 1px solid var(--line); padding-top: 14px; }
 """
 
@@ -184,6 +193,11 @@ def render_html(result: EvaluationResult, definitions: list[MetricDefinition]) -
     limitations = "".join(f"<li>{escape(item)}</li>" for item in LIMITATIONS)
     improvements = "".join(f"<li>{escape(item)}</li>" for item in IMPROVEMENTS)
     conclusions = "".join(f"<li>{escape(item)}</li>" for item in build_conclusions(result))
+    band_rows = "".join(
+        f"<tr><td class='num'>&gt;= {threshold:g}</td><td>{escape(label)}</td>"
+        f"<td>{escape(advice)}</td></tr>"
+        for threshold, label, advice in SCORE_BANDS
+    )
     tie_note = ""
     if result.tied_worst_case_ids:
         tie_note = (
@@ -218,8 +232,12 @@ def render_html(result: EvaluationResult, definitions: list[MetricDefinition]) -
     {human_card}
   </div>
 
+  <p class="band">得分解读：<b>{escape(describe_band(result.overall_score))}</b></p>
+
   <h2>1. 结论与建议</h2>
   <ul>{conclusions}</ul>
+  <table><thead><tr><th class="num">总分区间</th><th>结论</th><th>建议动作</th></tr></thead>
+  <tbody>{band_rows}</tbody></table>
 
   <h2>2. 指标总览</h2>
   <table><thead><tr><th>指标</th><th class="num">权重</th><th class="num">均值</th>

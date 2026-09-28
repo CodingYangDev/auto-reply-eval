@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Callable, Sequence
+from typing import Callable
 
 from auto_reply_eval.config import Settings
 from auto_reply_eval.data.repository import DatasetRepository

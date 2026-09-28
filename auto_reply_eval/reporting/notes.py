@@ -8,6 +8,25 @@ from __future__ import annotations
 
 from auto_reply_eval.models import EvaluationResult, MetricName
 
+# 总分区间与业务动作的对应关系。
+# 有了它，"整体 2.87 分"才能直接翻译成业务方能执行的决策，而不是一个孤立的数字。
+SCORE_BANDS: tuple[tuple[float, str, str], ...] = (
+    (4.2, "可扩量", "质量已达到可替代人工的水平，可以扩大自动回复覆盖范围。"),
+    (3.5, "有条件扩量", "可先在高频、信息型问题上灰度，同时补齐短板指标。"),
+    (2.5, "不建议扩量", "用户仍需大量自助操作，扩量会放大人工工单量与客诉风险。"),
+    (1.0, "不可用", "存在明显质量问题或误导风险，需要先整改再评估。"),
+)
+
+
+def describe_band(score: float) -> str:
+    """把总分翻译成区间标签与业务动作建议。"""
+
+    for threshold, label, advice in SCORE_BANDS:
+        if score >= threshold:
+            return f"{label}（>= {threshold:g} 分）：{advice}"
+    return ""
+
+
 LIMITATIONS: tuple[str, ...] = (
     "**依赖裁判模型的能力**：四个指标都由 LLM 裁判打分，模型自身的偏见、对"
     "『平台规则是否属实』的无知都会传导到结果上。本轮 20 条回复的政策类断言"
@@ -80,4 +99,4 @@ def build_conclusions(result: EvaluationResult) -> list[str]:
     return conclusions
 
 
-__all__ = ["IMPROVEMENTS", "LIMITATIONS", "build_conclusions"]
+__all__ = ["IMPROVEMENTS", "LIMITATIONS", "SCORE_BANDS", "build_conclusions", "describe_band"]
