@@ -336,8 +336,8 @@ project/
 | 任务要求的交付物 | 状态 | 位置 |
 | --- | --- | --- |
 | ① README（指标定义及理由 / 评估方法 / 局限性 / AI 工具使用情况） | 已完成 | 本文档 |
-| ② 开发工具截图（IDE / Agent / 终端） | **待补充** | 见下方"还需补的截图" |
-| ③ 运行结果截图（评估报告、各指标得分） | 已完成（6 张） | `docs/screenshots/` |
+| ② 开发工具截图（IDE / Agent / 终端） | **待补充（截图 1）** | `docs/screenshots/01_devtools.png` |
+| ③ 运行结果截图（评估报告、各指标得分） | 已完成（截图 2-7，共 6 张） | `docs/screenshots/` |
 | ④ 线上地址或 GitHub 链接 | 本地地址已可用 | `http://localhost:8765/eval_report.html` |
 
 配套代码与产物：
@@ -351,31 +351,42 @@ project/
 | 裁判响应缓存（保证可复现） | `cache/judge_cache_real.json` |
 | 测试 | `tests/`（`python -m pytest tests -q` → 16 passed） |
 
-### 运行结果截图
+### 截图清单（共 7 张）
 
-截图 1：首页——整体得分、及格率、人工参考对比、得分解读
+**开发过程**
 
-![首页与整体结论](docs/screenshots/01_overview.png)
+截图 1：开发工具——Trae / Agent 界面（左侧项目文件树）+ 终端
+（`python -m auto_reply_eval.cli --mode real` 与 `python -m pytest tests -q`）
 
-截图 2：指标总览与各指标分布（每档分数的条数分布）
+![开发工具与终端](docs/screenshots/01_devtools.png)
 
-![指标总览与分布](docs/screenshots/02_metrics.png)
+> 该文件需自行截取并放入 `docs/screenshots/01_devtools.png`，放入后本图即正常显示。
 
-截图 3：最差 3 条 case 及逐指标判据、闸门惩罚、人工参考对照
+**运行结果**（均由 `reports/eval_report.html` 实际渲染后截取）
 
-![最差 3 条 case](docs/screenshots/03_worst_cases.png)
+截图 2：首页——整体得分、及格率、人工参考对比、得分解读
 
-截图 4：与人工标注的一致性校验、评分卡（指标定义与优先级）
+![首页与整体结论](docs/screenshots/02_overview.png)
 
-![一致性校验与评分卡](docs/screenshots/04_validation.png)
+截图 3：指标总览与各指标分布（每档分数的条数分布）
 
-截图 5（上）：全部 20 条 case 的四个指标得分明细，按总分升序
+![指标总览与分布](docs/screenshots/03_metrics.png)
 
-![全部 case 明细 上](docs/screenshots/05_all_cases_a.png)
+截图 4：最差 3 条 case 及逐指标判据、闸门惩罚、人工参考对照
 
-截图 5（下）：明细表下半部分（20 条完整覆盖）
+![最差 3 条 case](docs/screenshots/04_worst_cases.png)
 
-![全部 case 明细 下](docs/screenshots/05_all_cases_b.png)
+截图 5：与人工标注的一致性校验、评分卡（指标定义与优先级）
+
+![一致性校验与评分卡](docs/screenshots/05_validation.png)
+
+截图 6：全部 20 条 case 的四个指标得分明细（上半部分）
+
+![全部 case 明细 上](docs/screenshots/06_all_cases_a.png)
+
+截图 7：全部 20 条 case 的四个指标得分明细（下半部分，与截图 6 合起来完整覆盖 20 条）
+
+![全部 case 明细 下](docs/screenshots/07_all_cases_b.png)
 
 ### 线上地址
 
@@ -395,15 +406,15 @@ git push -u origin master
 # 然后把 reports/eval_report.html 改名为 index.html 放到 docs/ 或 gh-pages 分支即可
 ```
 
-### 还需补的截图：开发工具
+### 待补截图（截图 1）的截取要求
 
-这一张需要你自己截（我无法截取你的 IDE 窗口），建议包含两个要素：
+截图 1 需要自行截取（代码无法截取本地 IDE 窗口），建议包含两个要素：
 
 1. **Agent / IDE 界面**：Trae 里打开本项目，左侧能看到 `auto_reply_eval/` 的文件树；
 2. **终端**：执行 `python -m auto_reply_eval.cli --mode real` 与
    `python -m pytest tests -q` 的画面（终端里能看到"整体得分 2.87"和"16 passed"）。
 
-存成 `docs/screenshots/00_devtools.png` 即可与上面 5 张凑成完整的一组。
+存成 `docs/screenshots/01_devtools.png`，即与截图 2-7 凑成完整的 7 张。
 
 ---
 
