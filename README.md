@@ -12,6 +12,9 @@
   "主动代办"与"推回用户"；
 - **三份报告产物**：Markdown、单文件 HTML（可直接部署/截图）、原始 JSON。
 
+> **线上报告：<https://codingyangdev.github.io/auto-reply-eval/>** ·
+> 仓库：<https://github.com/CodingYangDev/auto-reply-eval>
+
 **目录**：0 结论摘要（含得分解读） · 1 快速开始 · 2 指标定义及理由 · 3 评估方法 ·
 4 局限性讨论 · 5 AI 工具使用情况 · 6 交付物清单与截图 · 7 如何调整评分口径
 
@@ -316,13 +319,15 @@ project/
 
 | 环节 | 工具 | 用法 |
 | --- | --- | --- |
-| 需求拆解 | TraeCode（Agent 模式） | 把 `eval_criteria.md` 的模糊描述拆成 4 个可判定问题，并确定权重/闸门口径 |
-| 代码实现 | TraeCode（Agent 模式） | 生成分层代码骨架（配置/模型/裁判/聚合/报告），人工逐层复核与调整 |
+| 环境 | **Trae**（IDE + Agent 模式） | 全程在 Trae 中开发：Agent 负责生成与改写代码，人工在编辑器里逐层复核 |
+| 需求拆解 | Trae Agent | 把 `eval_criteria.md` 的模糊描述拆成 4 个可判定问题，并确定权重/闸门口径 |
+| 代码实现 | Trae Agent | 生成分层代码骨架（配置/模型/裁判/聚合/报告），人工逐层复核与调整 |
 | 评分口径设计 | 人工 + AI 讨论 | 优先级、权重、闸门系数、评分锚点由人工拍板，AI 负责穷举反例与边界场景 |
-| 数据集预研 | AI 辅助 | 读取 20 条 case 与人工评语，归纳出"只告知不办理"这一共同病灶 |
-| 工程质量 | AI 辅助 + 人工判断 | 发现真实裁判输出不稳定后，补上响应缓存与稳健化校验判据 |
+| 数据集预研 | Trae Agent | 读取 20 条 case 与人工评语，归纳出"只告知不办理"这一共同病灶 |
+| 工程质量 | Trae Agent + 人工判断 | 发现真实裁判输出不稳定后，补上响应缓存与稳健化校验判据 |
+| 部署 | Trae 内置终端 + Git | 推送 main 与 gh-pages 分支，GitHub Pages 自动发布线上报告 |
 | 报告与文档 | AI 起草 + 人工核对 | 报告模板与本 README 由 AI 起草，所有结论数字均由程序跑出、人工核对 |
-| 测试 | AI 辅助 | 生成 pytest 用例（端到端、裁判鲁棒性、缓存、权重口径） |
+| 测试 | Trae Agent | 生成 pytest 用例（端到端、裁判鲁棒性、缓存、权重口径） |
 
 **评估结论由真实大模型产出**：本报告跑的是 `--mode real`，裁判模型为
 `deepseek-chat`（`https://api.deepseek.com/v1`），共 40 次调用（20 条自动回复 +
@@ -338,7 +343,7 @@ project/
 | ① README（指标定义及理由 / 评估方法 / 局限性 / AI 工具使用情况） | 已完成 | 本文档 |
 | ② 开发工具截图（IDE / Agent / 终端） | **待补充（截图 1）** | `docs/screenshots/01_devtools.png` |
 | ③ 运行结果截图（评估报告、各指标得分） | 已完成（截图 2-7，共 6 张） | `docs/screenshots/` |
-| ④ 线上地址或 GitHub 链接 | 本地地址已可用；推送后启用 Pages 即为线上地址 | `http://localhost:8765/eval_report.html` |
+| ④ 线上地址或 GitHub 链接 | ✅ 已完成 | 仓库 <https://github.com/CodingYangDev/auto-reply-eval> · 线上报告 <https://codingyangdev.github.io/auto-reply-eval/> |
 
 配套代码与产物：
 
@@ -399,61 +404,65 @@ python -m http.server 8765 --directory reports
 # 浏览器访问 http://localhost:8765/eval_report.html
 ```
 
-**方式二：部署到 GitHub Pages**
+**方式二：线上地址（已部署）**
 
-流水线每次运行时会额外把报告写一份到 `docs/index.html`，所以推送到 GitHub 后
-只需在仓库页面 `Settings → Pages` 里把 **Source** 设为
-`Deploy from a branch`、分支选 `main`、目录选 `/docs`，线上地址即为：
+- 仓库地址：<https://github.com/CodingYangDev/auto-reply-eval>
+- 线上报告：<https://codingyangdev.github.io/auto-reply-eval/>
 
-```
-https://<你的用户名>.github.io/<仓库名>/
-```
-
-推送命令（本仓库当前分支是 `main`，尚未配置远程）：
+站点内容来自 `docs/`：流水线每次运行都会额外把报告写一份到 `docs/index.html`。
+Pages 的发布源是 `gh-pages` 分支，因此更新报告后需要同步一次站点：
 
 ```bash
-git remote add origin git@github.com:<你的用户名>/<仓库名>.git
-git push -u origin main
+git push origin main                            # 更新代码与报告
+git subtree push --prefix docs origin gh-pages   # 同步站点内容（约 30 秒后生效）
 ```
-
-细步骤见本节末尾的"发布到 GitHub 的完整步骤"。
 
 ### 待补截图（截图 1）的截取要求
 
-截图 1 需要自行截取（代码无法截取本地 IDE 窗口），建议包含两个要素：
+截图 1 需要自行截取（代码无法截取本地 IDE 窗口）。本项目用 **Trae** 开发，
+按下面操作可以一屏同时拍到"文件树 + 终端"两个要素：
 
-1. **Agent / IDE 界面**：Trae 里打开本项目，左侧能看到 `auto_reply_eval/` 的文件树；
-2. **终端**：执行 `python -m auto_reply_eval.cli --mode real` 与
-   `python -m pytest tests -q` 的画面（终端里能看到"整体得分 2.87"和"16 passed"）。
-
-存成 `docs/screenshots/01_devtools.png`，即与截图 2-7 凑成完整的 7 张。
-
-### 发布到 GitHub 的完整步骤
-
-1. **新建仓库**：打开 <https://github.com/new>，
-   `Repository name` 填 `auto-reply-eval`（名字随意），
-   可见性 Public / Private 均可；
-   **不要勾选** "Add a README file / .gitignore / license"（本地已有，勾了会冲突）。
-   点 `Create repository`。
-2. **复制仓库地址**：创建成功后会跳到仓库首页，点绿色的 `Code` 按钮 →
-   切到 **SSH** 页签 → 复制形如 `git@github.com:<用户名>/<仓库名>.git` 的地址。
-   （若选 HTTPS 页签，推送时需要 Personal Access Token，比 SSH 麻烦。）
-3. **关联远程并推送**（本机已配好 SSH 密钥，可直接推送）：
+1. Trae 里打开项目根目录 `e:\agent_study\langgraph_materials\study\project`，
+   左侧资源管理器展开 `auto_reply_eval/`，能看到 `llm/`、`judge/`、`validation/` 等分层；
+2. 按 <kbd>Ctrl</kbd>+<kbd>`</kbd> 打开 Trae 内置终端，依次执行：
 
    ```bash
-   cd e:\agent_study\langgraph_materials\study\project
-   git remote add origin git@github.com:<用户名>/<仓库名>.git
-   git push -u origin main
+   python -m auto_reply_eval.cli --mode real     # 终端里能看到"整体得分 2.87"
+   python -m pytest tests -q                     # 终端里能看到"16 passed"
    ```
 
-4. **开启 GitHub Pages**：仓库页 `Settings` → 左侧 `Pages` →
-   Source 选 `Deploy from a branch` → 分支 `main`、目录 `/docs` → `Save`。
-   等 1-2 分钟，访问 `https://<用户名>.github.io/<仓库名>/` 即为线上地址。
-5. **回填链接**：把该地址更新到上面"交付物清单"表格的第 ④ 行。
+3. 截取**整个 Trae 窗口**，保存为 `docs/screenshots/01_devtools.png`。
 
-> 如果 GitHub 访问受限，可以把第 1-3 步换成 Gitee（码云）：新建仓库后
-> `git remote add origin git@gitee.com:<用户名>/<仓库名>.git`，
-> 推送与服务开启方式同理。
+> 窗口太窄装不下时，也可以分成两张（`01_devtools.png` 拍 IDE、再补一张终端图），
+> 但编号 1 的这张务必包含 Trae 窗口本身，用来证明开发过程。
+
+### 发布到 GitHub 的完整步骤（本仓库已完成，留档备查）
+
+1. **新建仓库**：打开 <https://github.com/new>，
+   `Repository name` 填 `auto-reply-eval`，可见性选 Public / Private 均可；
+   **不要勾选** "Add a README file / .gitignore / license"（本地已有，勾了会冲突）。
+2. **复制仓库地址**：仓库首页点绿色 `Code` 按钮 → **SSH** 页签 →
+   复制形如 `git@github.com:<用户名>/<仓库名>.git` 的地址。
+   （HTTPS 页签也能用，但推送需要 Personal Access Token。）
+3. **关联远程并推送**：
+
+   ```bash
+   git remote add origin git@github.com:CodingYangDev/auto-reply-eval.git
+   git push -u origin main
+   git subtree push --prefix docs origin gh-pages   # 生成站点分支，Pages 会自动启用
+   ```
+
+   > 如果本机配置过 `url.https://github.com/.insteadOf git@github.com:`
+   > 这类重写规则，`git@github.com:` 会被悄悄改成 HTTPS 从而要求输入 Token。
+   > 此时用显式协议绕过即可：`git remote set-url origin ssh://git@github.com/<用户名>/<仓库名>.git`
+4. **线上地址**：站点分支推送后 Pages 自动启用，约 1 分钟后可访问
+   `https://<用户名>.github.io/<仓库名>/`。
+   若想改成从 `main` 分支的 `/docs` 目录发布，可在
+   `Settings → Pages → Source` 里切换（改代码后就不用再推 gh-pages 了）。
+
+> 如果 GitHub 访问受限，可以整体换成 Gitee（码云）：
+> `git remote set-url origin git@gitee.com:<用户名>/<仓库名>.git`，
+> 推送后在仓库的"服务 → Gitee Pages"里开启。
 
 ---
 
