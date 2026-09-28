@@ -260,6 +260,7 @@ project/
 │   └── reporting/              # 控制台 / Markdown / HTML 渲染
 ├── tests/                      # 16 个 pytest 用例
 ├── reports/                    # 生成的报告产物
+├── docs/screenshots/           # 运行结果截图（交付物 ③）
 ├── cache/                      # 裁判响应缓存（保证报告可复现）
 ├── task3_auto_replies.json     # 输入：20 条自动回复
 ├── task3_human_ref.json        # 输入：人工参考回复 + 评语
@@ -336,7 +337,7 @@ project/
 | --- | --- | --- |
 | ① README（指标定义及理由 / 评估方法 / 局限性 / AI 工具使用情况） | 已完成 | 本文档 |
 | ② 开发工具截图（IDE / Agent / 终端） | **待补充** | 见下方"还需补的截图" |
-| ③ 运行结果截图（评估报告、各指标得分） | 已完成（5 张） | `docs/screenshots/` |
+| ③ 运行结果截图（评估报告、各指标得分） | 已完成（6 张） | `docs/screenshots/` |
 | ④ 线上地址或 GitHub 链接 | 本地地址已可用 | `http://localhost:8765/eval_report.html` |
 
 配套代码与产物：
@@ -356,21 +357,25 @@ project/
 
 ![首页与整体结论](docs/screenshots/01_overview.png)
 
-截图 2：指标总览与各指标分布
+截图 2：指标总览与各指标分布（每档分数的条数分布）
 
 ![指标总览与分布](docs/screenshots/02_metrics.png)
 
-截图 3：最差 3 条 case 及逐指标判据
+截图 3：最差 3 条 case 及逐指标判据、闸门惩罚、人工参考对照
 
 ![最差 3 条 case](docs/screenshots/03_worst_cases.png)
 
-截图 4：与人工标注的一致性校验、评分卡
+截图 4：与人工标注的一致性校验、评分卡（指标定义与优先级）
 
-![一致性校验](docs/screenshots/04_validation.png)
+![一致性校验与评分卡](docs/screenshots/04_validation.png)
 
-截图 5：全部 20 条 case 的四个指标得分明细
+截图 5（上）：全部 20 条 case 的四个指标得分明细，按总分升序
 
-![全部 case 明细](docs/screenshots/05_all_cases.png)
+![全部 case 明细 上](docs/screenshots/05_all_cases_a.png)
+
+截图 5（下）：明细表下半部分（20 条完整覆盖）
+
+![全部 case 明细 下](docs/screenshots/05_all_cases_b.png)
 
 ### 线上地址
 

@@ -1,7 +1,7 @@
 {
   "mode": "real",
   "model": "deepseek-chat @ https://api.deepseek.com/v1",
-  "generated_at": "2026-09-28T18:44:43.824616",
+  "generated_at": "2026-09-28T18:46:41.193145",
   "case_count": 20,
   "overall_score": 2.866,
   "pass_threshold": 3.5,

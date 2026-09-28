@@ -236,27 +236,27 @@ def render_html(result: EvaluationResult, definitions: list[MetricDefinition]) -
 
   <h2>1. 结论与建议</h2>
   <ul>{conclusions}</ul>
-  <table><thead><tr><th class="num">总分区间</th><th>结论</th><th>建议动作</th></tr></thead>
+  <table id="score-bands"><thead><tr><th class="num">总分区间</th><th>结论</th><th>建议动作</th></tr></thead>
   <tbody>{band_rows}</tbody></table>
 
   <h2>2. 指标总览</h2>
-  <table><thead><tr><th>指标</th><th class="num">权重</th><th class="num">均值</th>
+  <table id="metric-summary"><thead><tr><th>指标</th><th class="num">权重</th><th class="num">均值</th>
   <th class="num">最低</th><th class="num">最高</th></tr></thead>
   <tbody>{summary_rows}</tbody></table>
 
   <h2>3. 各指标分布</h2>
-  {distributions}
+  <div id="distribution">{distributions}</div>
 
   <h2>4. 最差 {len(result.worst_cases)} 条 case 及分析</h2>
-  {_render_worst_cases(result)}
+  <div id="worst-cases">{_render_worst_cases(result)}</div>
   {tie_note}
 
   <h2>5. 与人工标注的一致性校验</h2>
-  <table><thead><tr><th>校验项</th><th>结果</th><th>结论</th></tr></thead>
+  <table id="validation"><thead><tr><th>校验项</th><th>结果</th><th>结论</th></tr></thead>
   <tbody>{validation_rows}</tbody></table>
 
   <h2>6. 评分卡（指标定义与优先级）</h2>
-  {_render_rubric(definitions)}
+  <div id="rubric">{_render_rubric(definitions)}</div>
 
   <h2>7. 局限性</h2>
   <ul>{limitations}</ul>
@@ -265,7 +265,7 @@ def render_html(result: EvaluationResult, definitions: list[MetricDefinition]) -
   <ul>{improvements}</ul>
 
   <h2>9. 全部 case 明细（按总分升序）</h2>
-  <table><thead><tr><th class="num">排名</th><th>case</th><th class="num">不瞎编</th>
+  <table id="all-cases"><thead><tr><th class="num">排名</th><th>case</th><th class="num">不瞎编</th>
   <th class="num">准确</th><th class="num">有用</th><th class="num">语气</th>
   <th class="num">总分</th></tr></thead>
   <tbody>{detail_rows}</tbody></table>
