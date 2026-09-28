@@ -260,7 +260,7 @@ project/
 │   └── reporting/              # 控制台 / Markdown / HTML 渲染
 ├── tests/                      # 16 个 pytest 用例
 ├── reports/                    # 生成的报告产物
-├── docs/screenshots/           # 运行结果截图（交付物 ③）
+├── docs/                       # GitHub Pages 站点：index.html（报告）+ screenshots/（截图，交付物 ③）
 ├── cache/                      # 裁判响应缓存（保证报告可复现）
 ├── task3_auto_replies.json     # 输入：20 条自动回复
 ├── task3_human_ref.json        # 输入：人工参考回复 + 评语
@@ -338,7 +338,7 @@ project/
 | ① README（指标定义及理由 / 评估方法 / 局限性 / AI 工具使用情况） | 已完成 | 本文档 |
 | ② 开发工具截图（IDE / Agent / 终端） | **待补充（截图 1）** | `docs/screenshots/01_devtools.png` |
 | ③ 运行结果截图（评估报告、各指标得分） | 已完成（截图 2-7，共 6 张） | `docs/screenshots/` |
-| ④ 线上地址或 GitHub 链接 | 本地地址已可用 | `http://localhost:8765/eval_report.html` |
+| ④ 线上地址或 GitHub 链接 | 本地地址已可用；推送后启用 Pages 即为线上地址 | `http://localhost:8765/eval_report.html` |
 
 配套代码与产物：
 
@@ -390,21 +390,33 @@ project/
 
 ### 线上地址
 
-HTML 报告是单文件、零依赖的静态页面，**双击即可打开**，也可直接丢到任意静态托管
-（GitHub Pages / Vercel / Netlify）作为线上地址。本地起服务：
+**方式一：本地预览（无需部署）**
+
+HTML 报告是单文件、零依赖的静态页面，双击即可打开；也可以起个本地服务：
 
 ```bash
 python -m http.server 8765 --directory reports
 # 浏览器访问 http://localhost:8765/eval_report.html
 ```
 
-部署到 GitHub Pages（当前仓库尚未配置远程）：
+**方式二：部署到 GitHub Pages**
+
+流水线每次运行时会额外把报告写一份到 `docs/index.html`，所以推送到 GitHub 后
+只需在仓库页面 `Settings → Pages` 里把 **Source** 设为
+`Deploy from a branch`、分支选 `main`、目录选 `/docs`，线上地址即为：
+
+```
+https://<你的用户名>.github.io/<仓库名>/
+```
+
+推送命令（本仓库当前分支是 `main`，尚未配置远程）：
 
 ```bash
-git remote add origin <你的仓库地址>
-git push -u origin master
-# 然后把 reports/eval_report.html 改名为 index.html 放到 docs/ 或 gh-pages 分支即可
+git remote add origin git@github.com:<你的用户名>/<仓库名>.git
+git push -u origin main
 ```
+
+细步骤见本节末尾的"发布到 GitHub 的完整步骤"。
 
 ### 待补截图（截图 1）的截取要求
 
@@ -415,6 +427,33 @@ git push -u origin master
    `python -m pytest tests -q` 的画面（终端里能看到"整体得分 2.87"和"16 passed"）。
 
 存成 `docs/screenshots/01_devtools.png`，即与截图 2-7 凑成完整的 7 张。
+
+### 发布到 GitHub 的完整步骤
+
+1. **新建仓库**：打开 <https://github.com/new>，
+   `Repository name` 填 `auto-reply-eval`（名字随意），
+   可见性 Public / Private 均可；
+   **不要勾选** "Add a README file / .gitignore / license"（本地已有，勾了会冲突）。
+   点 `Create repository`。
+2. **复制仓库地址**：创建成功后会跳到仓库首页，点绿色的 `Code` 按钮 →
+   切到 **SSH** 页签 → 复制形如 `git@github.com:<用户名>/<仓库名>.git` 的地址。
+   （若选 HTTPS 页签，推送时需要 Personal Access Token，比 SSH 麻烦。）
+3. **关联远程并推送**（本机已配好 SSH 密钥，可直接推送）：
+
+   ```bash
+   cd e:\agent_study\langgraph_materials\study\project
+   git remote add origin git@github.com:<用户名>/<仓库名>.git
+   git push -u origin main
+   ```
+
+4. **开启 GitHub Pages**：仓库页 `Settings` → 左侧 `Pages` →
+   Source 选 `Deploy from a branch` → 分支 `main`、目录 `/docs` → `Save`。
+   等 1-2 分钟，访问 `https://<用户名>.github.io/<仓库名>/` 即为线上地址。
+5. **回填链接**：把该地址更新到上面"交付物清单"表格的第 ④ 行。
+
+> 如果 GitHub 访问受限，可以把第 1-3 步换成 Gitee（码云）：新建仓库后
+> `git remote add origin git@gitee.com:<用户名>/<仓库名>.git`，
+> 推送与服务开启方式同理。
 
 ---
 

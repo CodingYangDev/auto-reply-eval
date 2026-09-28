@@ -49,6 +49,8 @@ class Settings(BaseSettings):
     # 裁判响应缓存目录，按运行模式分文件存放，避免 mock 与 real 相互污染
     cache_dir: Path = PROJECT_ROOT / "cache"
     use_cache: bool = True
+    # GitHub Pages 目录：报告会额外写一份 index.html 到这里，便于一键部署线上地址
+    pages_dir: Path = PROJECT_ROOT / "docs"
 
     # 评分口径
     worst_case_count: int = 3

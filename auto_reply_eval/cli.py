@@ -65,8 +65,13 @@ def resolve_settings(args: argparse.Namespace) -> Settings:
 def write_reports(
     result: EvaluationResult,
     report_dir: Path,
+    pages_dir: Path | None = None,
 ) -> list[Path]:
-    """把结果写成 Markdown / HTML / JSON 三种产物。"""
+    """把结果写成 Markdown / HTML / JSON 三种产物。
+
+    传入 ``pages_dir`` 时会额外写一份 ``index.html``，
+    使 GitHub Pages 直接指向该目录即可得到线上地址，无需手工搬文件。
+    """
 
     report_dir.mkdir(parents=True, exist_ok=True)
     definitions = list(all_definitions())
@@ -74,13 +79,22 @@ def write_reports(
     markdown_path = report_dir / "eval_report.md"
     markdown_path.write_text(render_markdown(result), encoding="utf-8")
 
+    html_content = render_html(result, definitions)
     html_path = report_dir / "eval_report.html"
-    html_path.write_text(render_html(result, definitions), encoding="utf-8")
+    html_path.write_text(html_content, encoding="utf-8")
 
     json_path = report_dir / "eval_result.json"
     json_path.write_text(result.model_dump_json(indent=2), encoding="utf-8")
 
-    return [markdown_path, html_path, json_path]
+    paths = [markdown_path, html_path, json_path]
+
+    if pages_dir is not None:
+        pages_dir.mkdir(parents=True, exist_ok=True)
+        index_path = pages_dir / "index.html"
+        index_path.write_text(html_content, encoding="utf-8")
+        paths.append(index_path)
+
+    return paths
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -102,7 +116,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(render_console(result))
     print()
     print("报告产物：")
-    for path in write_reports(result, settings.report_dir):
+    for path in write_reports(result, settings.report_dir, settings.pages_dir):
         print(f"  - {path}")
     return 0
 
