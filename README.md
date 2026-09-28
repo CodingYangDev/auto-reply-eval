@@ -346,8 +346,8 @@ project/
 | 任务要求的交付物 | 状态 | 位置 |
 | --- | --- | --- |
 | ① README（指标定义及理由 / 评估方法 / 局限性 / AI 工具使用情况） | 已完成 | 本文档 |
-| ② 开发工具截图（IDE / Agent / 终端） | **待补充（截图 1）** | `docs/screenshots/01_devtools.png` |
-| ③ 运行结果截图（评估报告、各指标得分） | 已完成（截图 2-7，共 6 张） | `docs/screenshots/` |
+| ② 开发工具截图（IDE / Agent / 终端） | 未附带截图；开发过程见提交历史 | `git log --oneline`（11 次提交） |
+| ③ 运行结果截图（评估报告、各指标得分） | ✅ 已完成（6 张） | `docs/screenshots/` |
 | ④ 线上地址或 GitHub 链接 | ✅ 已完成 | 仓库 <https://github.com/CodingYangDev/auto-reply-eval> · 线上报告 <https://codingyangdev.github.io/auto-reply-eval/> |
 
 配套代码与产物：
@@ -361,42 +361,33 @@ project/
 | 裁判响应缓存（保证可复现） | `cache/judge_cache_real.json` |
 | 测试 | `tests/`（`python -m pytest tests -q` → 16 passed） |
 
-### 截图清单（共 7 张）
+### 运行结果截图（共 6 张）
 
-**开发过程**
+均由 `reports/eval_report.html` 实际渲染后截取。
 
-截图 1：开发工具——Trae / Agent 界面（左侧项目文件树）+ 终端
-（`python -m auto_reply_eval.cli --mode real` 与 `python -m pytest tests -q`）
+截图 1：首页——整体得分、及格率、人工参考对比、得分解读
 
-> **待补充**：这张图需自行截取。截好后存为 `docs/screenshots/01_devtools.png`，
-> 并把本行替换成 `![开发工具与终端](docs/screenshots/01_devtools.png)` 即会正常显示。
-> （此处先不放图片引用，是为了避免文件缺位时 README 出现裂图。制作步骤见文末。）
+![首页与整体结论](docs/screenshots/01_overview.png)
 
-**运行结果**（均由 `reports/eval_report.html` 实际渲染后截取）
+截图 2：指标总览与各指标分布（每档分数的条数分布）
 
-截图 2：首页——整体得分、及格率、人工参考对比、得分解读
+![指标总览与分布](docs/screenshots/02_metrics.png)
 
-![首页与整体结论](docs/screenshots/02_overview.png)
+截图 3：最差 3 条 case 及逐指标判据、闸门惩罚、人工参考对照
 
-截图 3：指标总览与各指标分布（每档分数的条数分布）
+![最差 3 条 case](docs/screenshots/03_worst_cases.png)
 
-![指标总览与分布](docs/screenshots/03_metrics.png)
+截图 4：与人工标注的一致性校验、评分卡（指标定义与优先级）
 
-截图 4：最差 3 条 case 及逐指标判据、闸门惩罚、人工参考对照
+![一致性校验与评分卡](docs/screenshots/04_validation.png)
 
-![最差 3 条 case](docs/screenshots/04_worst_cases.png)
+截图 5：全部 20 条 case 的四个指标得分明细（上半部分）
 
-截图 5：与人工标注的一致性校验、评分卡（指标定义与优先级）
+![全部 case 明细 上](docs/screenshots/05_all_cases_a.png)
 
-![一致性校验与评分卡](docs/screenshots/05_validation.png)
+截图 6：全部 20 条 case 的四个指标得分明细（下半部分，与截图 5 合起来完整覆盖 20 条）
 
-截图 6：全部 20 条 case 的四个指标得分明细（上半部分）
-
-![全部 case 明细 上](docs/screenshots/06_all_cases_a.png)
-
-截图 7：全部 20 条 case 的四个指标得分明细（下半部分，与截图 6 合起来完整覆盖 20 条）
-
-![全部 case 明细 下](docs/screenshots/07_all_cases_b.png)
+![全部 case 明细 下](docs/screenshots/06_all_cases_b.png)
 
 ### 线上地址
 
@@ -426,12 +417,21 @@ git push origin main    # 推送后由 Actions 自动发布，约 1 分钟生效
 > 推送 `gh-pages` 后 GitHub 会在仓库页提示 "Create a pull request for 'gh-pages'"，
 > 这是分支对比的常规提示，**与本项目无关，忽略即可**，不要合并。
 
-### 待补截图（截图 1）的截取要求
+### 开发过程如何查看（未附带开发工具截图）
 
-截图 1 需要自行截取（代码无法截取本地 IDE 窗口）。本项目用 **Trae** 开发，
-按下面操作可以一屏同时拍到"文件树 + 终端"两个要素：
+本项目在 **Trae** 中开发，出于提交材料精简的考虑，**仓库未附带 IDE / 终端截图**。
+开发过程可通过以下方式查看：
 
-1. Trae 里打开项目根目录 `e:\agent_study\langgraph_materials\study\project`，
+1. **提交历史**：`git log --oneline` 共 11 次提交，完整记录了从接口接入、
+   指标口径设计、裁判稳定性修复、报告产物补齐到 Pages 部署的过程，
+   例如 `feat: 接入真实 LLM 裁判并保证评估可复现`、
+   `refactor: mock 模式不再套响应缓存`；
+2. **真实运行产物**：`reports/` 三份报告 + 6 张运行截图 + 线上报告页面，
+   全部由程序实际跑出（非手工编写）。
+
+如需补一张开发工具截图，操作如下：
+
+1. Trae 打开项目根目录 `e:\agent_study\langgraph_materials\study\project`，
    左侧资源管理器展开 `auto_reply_eval/`，能看到 `llm/`、`judge/`、`validation/` 等分层；
 2. 按 <kbd>Ctrl</kbd>+<kbd>`</kbd> 打开 Trae 内置终端，依次执行：
 
@@ -440,10 +440,8 @@ git push origin main    # 推送后由 Actions 自动发布，约 1 分钟生效
    python -m pytest tests -q                     # 终端里能看到"16 passed"
    ```
 
-3. 截取**整个 Trae 窗口**，保存为 `docs/screenshots/01_devtools.png`。
-
-> 窗口太窄装不下时，也可以分成两张（`01_devtools.png` 拍 IDE、再补一张终端图），
-> 但编号 1 的这张务必包含 Trae 窗口本身，用来证明开发过程。
+3. 截取整个 Trae 窗口存为 `docs/screenshots/00_devtools.png`，
+   并把本节替换为 `![开发工具](docs/screenshots/00_devtools.png)` 即可正常显示。
 
 ### 发布到 GitHub 的完整步骤（本仓库已完成，留档备查）
 
