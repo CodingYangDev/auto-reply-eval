@@ -10,14 +10,16 @@ from auto_reply_eval.llm.openai_client import OpenAICompatibleClient
 
 
 def create_llm_client(settings: Settings) -> LLMClient:
-    """按 ``settings.mode`` 创建裁判客户端，并按需套上磁盘缓存。"""
+    """按 ``settings.mode`` 创建裁判客户端。
 
-    client: LLMClient = (
-        OpenAICompatibleClient(settings)
-        if settings.mode is LLMMode.REAL
-        else MockLLMClient()
-    )
-    if settings.use_cache:
-        cache_file = settings.cache_dir / f"judge_cache_{settings.mode.value}.json"
-        return CachedLLMClient(client, cache_file)
-    return client
+    只对真实模型套缓存：mock 本身是确定性的、也没有网络开销，缓存对它没有意义。
+    """
+
+    if settings.mode is LLMMode.MOCK:
+        return MockLLMClient()
+
+    client: LLMClient = OpenAICompatibleClient(settings)
+    if not settings.use_cache:
+        return client
+    cache_file = settings.cache_dir / f"judge_cache_{settings.mode.value}.json"
+    return CachedLLMClient(client, cache_file)
