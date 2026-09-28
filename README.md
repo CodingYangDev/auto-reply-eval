@@ -294,7 +294,16 @@ project/
 ### 截图指引
 
 HTML 报告是单文件、零依赖的静态页面，**双击即可打开**，也可直接丢到任意静态托管
-（GitHub Pages / Vercel / Netlify）作为线上地址。建议截取以下 4 张：
+（GitHub Pages / Vercel / Netlify）作为线上地址。
+
+想本地起个地址打开它：
+
+```bash
+python -m http.server 8765 --directory reports
+# 浏览器访问 http://localhost:8765/eval_report.html
+```
+
+建议截取以下 4 张：
 
 1. **开发工具截图**：IDE / Agent 工具中本项目的文件树 + 终端执行
    `python -m auto_reply_eval.cli --mode mock` 的界面；
